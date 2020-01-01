@@ -2,10 +2,11 @@ package android.bignerdranch.com
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
 
 private const val CHARACTER_DATA_KEY = "CHARACTER_DATA_KEY"
 
@@ -29,8 +30,10 @@ class MainActivity : AppCompatActivity() {
             CharacterGenerator.generate()
 
         generateButton.setOnClickListener {
-            characterData = CharacterGenerator.generate()
-            displayCharacterData()
+            GlobalScope.launch(Dispatchers.Main) {
+                characterData = fetchCharacterData().await()
+                displayCharacterData()
+            }
         }
 
         displayCharacterData()
